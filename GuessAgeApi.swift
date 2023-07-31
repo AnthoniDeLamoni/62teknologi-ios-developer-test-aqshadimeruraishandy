@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 struct Person: Hashable, Codable {
-    let count: Int
-    let name: String
-    let age: Int
+    let count: Int?
+    let name: String?
+    let age: Int?
 }
 
 class AgeViewModel : ObservableObject {
-    @Published var person : Person = Person(count: 0, name: "Mahmood", age: 79)
+    @Published var person : Person = Person(count: nil, name: nil, age: 0)
     
     @Published var name = ""
     
@@ -42,35 +42,88 @@ class AgeViewModel : ObservableObject {
 struct GuessAgeView: View {
     @StateObject var ageViewModel = AgeViewModel()
     
+    @Environment(\.presentationMode) var presentationModes
+    
     var body: some View {
-        NavigationView {
             VStack(spacing: 100) {
-                Text("Your name is \(ageViewModel.person.name). I guess you're \(ageViewModel.person.age) with the total count of \(ageViewModel.person.count)")
-                    .padding()
-                    .navigationTitle("Guess Age API")
+                VStack {
+                    VStack(spacing: -10) {
+                        Text("Your Age Is:")
+                            .padding()
+                            .font(.system(size: 50, weight: .thin))
+                        if let ages = ageViewModel.person.age {
+                            Text("\(ages)")
+                                .padding()
+                                .font(.system(size: 50, weight: .bold))
+                        } else {
+                            Text("NaN")
+                                .padding()
+                                .font(.system(size: 35, weight: .bold))
+                        }
+                    }
+                    .navigationBarBackButtonHidden(true)
+                    .navigationTitle("GUESS AGE")
                     .navigationBarTitleDisplayMode(.inline)
+                    HStack(spacing: -30) {
+                        Text("Total count: ")
+                            .padding()
+                            .font(.system(size: 20, weight: .light))
+                        if let counts = ageViewModel.person.count {
+                            Text("\(counts)")
+                                .padding()
+                                .font(.system(size: 20, weight: .light))
+                        }
+                        
+                    }
+                }
                 
-                TextField("Insert the name here", text: $ageViewModel.name)
-                    .padding()
-                    .background(Color.gray)
-                    .frame(width: 300, height: 50)
                 
-                Button(action: {
-                    ageViewModel.fetchData()
-                },
-                       label: {
-                    Text("Guess the age")
-                        .bold()
-                        .frame(width: 300, height: 50)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                })
+                
+                VStack(spacing: 50) {
+                    
+                    VStack {
+                        
+                        TextField("Insert name here...", text:$ageViewModel.name)
+                        
+                        .overlay(
+                            Text("")
+                                .scaleEffect(0.8)
+                                .foregroundColor(Color.black)
+                                .opacity(0.5)
+                        )
+                        
+                            .padding()
+                            .foregroundColor(Color.black)
+                            .background(Color.gray.opacity(0.1))
+                            .cornerRadius(15)
+                            .frame(width: 300, height: 50)
+                    }
+                   
+                    VStack(spacing: 20) {
+                        Button(action: {
+                            ageViewModel.fetchData()
+                        },
+                               label: {
+                            Text("Guess the age")
+                                .bold()
+                                .frame(width: 300, height: 50)
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        })
+                        
+                        Button("Back to main menu") {
+                            presentationModes.wrappedValue.dismiss()
+                        }
+                    }
+                    
+                }
+                
             }
         }
         
     }
-}
+
 
 struct GuessAgeApi_Previews: PreviewProvider {
     static var previews: some View {

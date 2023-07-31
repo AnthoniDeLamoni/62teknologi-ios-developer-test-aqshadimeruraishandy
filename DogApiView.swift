@@ -39,8 +39,9 @@ class DogViewModel : ObservableObject {
 struct DogApiView: View {
     @StateObject var dogViewModel = DogViewModel()
     
+    @Environment(\.presentationMode) var presentationModes
+    
     var body: some View {
-        NavigationView {
             VStack(spacing: 100) {
                 AsyncImage(url: URL(string: dogViewModel.dogs.message)) {image in
                     
@@ -56,24 +57,32 @@ struct DogApiView: View {
                 .frame(width: 500, height: 250)
                 
                 // AsyncImage(url: URL(string: dogViewModel.dogs.message))
-                    .navigationBarTitle("Dog Image API", displayMode: .inline)
+                .navigationBarBackButtonHidden(true)
+                .navigationTitle("DOG IMAGES")
+                .navigationBarTitleDisplayMode(.inline)
                 
-                Button(action: {
-                    dogViewModel.fetchData()
-                },
-                       label: {
-                    Text("Summon cute little dog")
-                        .bold()
-                        .frame(width: 300, height: 50)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                })
+                VStack(spacing: 15) {
+                    Button(action: {
+                        dogViewModel.fetchData()
+                    },
+                           label: {
+                        Text("Summon cute little dog")
+                            .bold()
+                            .frame(width: 300, height: 50)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    })
+                    
+                    Button("Back to main menu") {
+                        presentationModes.wrappedValue.dismiss()
+                    }
+                }
             }
         }
         
     }
-}
+
 
 struct DogApiView_Previews: PreviewProvider {
     static var previews: some View {

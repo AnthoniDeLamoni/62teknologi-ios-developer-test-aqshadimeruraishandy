@@ -118,6 +118,7 @@ struct MainRootView : View {
             }
             .padding()
             .navigationTitle("Main Menu")
+            .navigationBarBackButtonHidden()
         }
     }
 }

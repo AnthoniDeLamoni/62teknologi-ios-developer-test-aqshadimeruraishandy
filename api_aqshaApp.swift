@@ -11,7 +11,7 @@ import SwiftUI
 struct api_aqshaApp: App {
     var body: some Scene {
         WindowGroup {
-            GuessAgeView()
+            MainRootView()
         }
     }
 }

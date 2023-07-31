@@ -14,7 +14,7 @@ struct Cat: Hashable, Codable {
 }
 
 class CatViewModel : ObservableObject {
-    @Published var cats : Cat = Cat(fact: "Give you reason to love cat", length: 90)
+    @Published var cats : Cat = Cat(fact: "GIVE YOU REASON TO LOVE CAT EVEN MORE \n \n 😃", length: 90)
     
     func fetchData() {
         guard let url = URL(string: "https://catfact.ninja/fact") else { return }
@@ -39,25 +39,73 @@ class CatViewModel : ObservableObject {
 struct CatFactView: View {
     @StateObject var catViewModel = CatViewModel()
     
+    @Environment(\.presentationMode) var presentationModes
+    
     var body: some View {
-        NavigationView {
             VStack(spacing: 100) {
-                Text("Fun fact about cat: \n \(catViewModel.cats.fact)")
-                    .navigationBarTitle("Cat Facts API", displayMode: .inline)
+                VStack {
+                    ZStack {
+                        ZStack{
+                            Rectangle()
+                                .frame(width: 300, height: 350)
+                                .foregroundColor(Color.teal)
+                                .cornerRadius(30)
+                                .shadow(radius: 10)
+                            VStack(spacing: -75) {
+                                Text("\(catViewModel.cats.fact)")
+                                    .multilineTextAlignment(.center)
+                                    .padding()
+                                    .frame(width: 300, height: 300)
+//                                    .background(Color.black)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
+                        .navigationBarBackButtonHidden(true)
+                        .navigationTitle("CAT FACT")
+                        .navigationBarTitleDisplayMode(.inline)
+                        
+                        ZStack{
+                            Circle()
+                                .frame(width: 100)
+                                .foregroundColor(Color.orange)
+                                .offset(y: -200)
+                            VStack{
+                                Text("🐱")
+                                    .offset(y: -200)
+                                    .foregroundColor(Color.black)
+                                    .font(.system(size: 25, weight: .bold))
+                            }
+                        }
+                    }
+                }
                 
-                Button(action: {
-                    catViewModel.fetchData()
-                },
-                       label: {
-                    Text("Give me fact!")
-                        .bold()
-                        .frame(width: 300, height: 50)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                })
+              
+                VStack(spacing: 15) {
+                    Button(action: {
+                        catViewModel.fetchData()
+                    },
+                           label: {
+                        Text("Give me fact!")
+                            .bold()
+                            .frame(width: 300, height: 50)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    })
+                    
+                    Button("Back to main menu") {
+                        presentationModes.wrappedValue.dismiss()
+                    }
+                }
+                
             }
         }
         
+    }
+
+
+struct CatFactView_Previews: PreviewProvider {
+    static var previews: some View {
+        CatFactView()
     }
 }

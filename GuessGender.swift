@@ -43,37 +43,48 @@ class GenderViewModel : ObservableObject {
 struct GuessGenderView: View {
     @StateObject var genderViewModel = GenderViewModel()
     
+    
+    @Environment(\.presentationMode) var presentationModes
+    
     var body: some View {
-        NavigationView {
-            VStack(spacing: 75) {
-                Text("Your Gender Is")
-                    .bold()
-                    .padding()
-                    .navigationBarTitle("Guess Gender API", displayMode: .inline)
-                
-                VStack(spacing: 35) {
-                    if let gender = genderViewModel.persons.gender {
-                        Text("\(gender)")
-                            .font(.system(size: 50))
-                            .bold()
+            VStack(spacing: 50) {
+                VStack {
+                    VStack(spacing: -10) {
+                        Text("Your Gender Is:")
                             .padding()
-                    } else {
-                        Text("Unknown name")
-                            .font(.system(size: 30))
-                            .bold()
-                            .padding()
+                            .font(.system(size: 50, weight: .thin))
+                            .navigationBarBackButtonHidden(true)
+                            .navigationTitle("GUESS GENDER")
+                            .navigationBarTitleDisplayMode(.inline)
+                        
+                        if let genders = genderViewModel.persons.gender {
+                            Text("\(genders.uppercased())")
+                                .padding()
+                                .font(.system(size: 50, weight: .bold))
+                        } else {
+                            Text("NaN")
+                                .padding()
+                                .font(.system(size: 50, weight: .bold))
+                        }
                     }
                     
-                    if let prob = genderViewModel.persons.probability {
-                        Text("Probability : \(ceil(prob))")
-        //                    .font(.system(size: 30))
-                            .bold()
+                }
+                HStack(spacing: -30) {
+                    Text("Status: ")
+                        .padding()
+                        .font(.system(size: 20, weight: .light))
+                    if genderViewModel.persons.probability == 1.000000 {
+                        Text("Your gender 100% certain")
                             .padding()
+                            .font(.system(size: 20, weight: .light))
+                    } else if genderViewModel.persons.probability == nil{
+                        Text("")
+                            .padding()
+                            .font(.system(size: 20, weight: .light))
                     } else {
-                        Text("Probability : ")
-        //                    .font(.system(size: 30))
-                            .bold()
+                        Text("Your gender less than 100% certain")
                             .padding()
+                            .font(.system(size: 20, weight: .light))
                     }
                     
                 }
@@ -81,25 +92,32 @@ struct GuessGenderView: View {
                 
                 TextField("Insert the name here", text: $genderViewModel.name)
                     .padding()
-                    .background(Color.gray)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(20)
                     .frame(width: 300, height: 50)
                 
-                Button(action: {
-                    genderViewModel.fetchData()
-                },
-                       label: {
-                    Text("Show your gender")
-                        .bold()
-                        .frame(width: 300, height: 50)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                })
+                VStack(spacing: 15) {
+                    Button(action: {
+                        genderViewModel.fetchData()
+                    },
+                           label: {
+                        Text("Show your gender")
+                            .bold()
+                            .frame(width: 300, height: 50)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    })
+                    
+                    Button("Back to main menu") {
+                        presentationModes.wrappedValue.dismiss()
+                    }
+                }
             }
         }
         
     }
-}
+
 
 struct GuessGender_Previews: PreviewProvider {
     static var previews: some View {

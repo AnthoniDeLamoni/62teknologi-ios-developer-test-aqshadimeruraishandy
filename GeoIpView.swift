@@ -48,11 +48,12 @@ class LocationInfoViewModel : ObservableObject {
 struct GeoIpView: View {
     @StateObject var locationViewModel = LocationInfoViewModel()
     
+    
+    @Environment(\.presentationMode) var presentationModes
+    
     var body: some View {
-        NavigationView {
-            
-            VStack(spacing: 35) {
-                VStack {
+            VStack(spacing: 40) {
+                VStack(spacing: 10) {
                     Text("City : \(locationViewModel.location.city)")
                         .frame(width: 250, alignment: .leading)
                     Text("Region : \(locationViewModel.location.region)")
@@ -62,21 +63,25 @@ struct GeoIpView: View {
                     Text("Location : \(locationViewModel.location.loc)")
                         .frame(width: 250, alignment: .leading)
                 }
+                .navigationBarBackButtonHidden(true)
+                .navigationTitle("IP INFO LOCATION")
+                .navigationBarTitleDisplayMode(.inline)
                     
                 
-                VStack {
+                VStack(spacing: 15) {
                     TextField("Insert the ip here", text: $locationViewModel.ip)
-                                .padding()
-                                .background(Color.gray)
-                                .frame(width: 300, height: 50)
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(20)
+                        .frame(width: 300, height: 50)
                         
-                    Text("e.g 192.168.201.43")
-                        .frame(width: 300, alignment: .leading)
+                    Text("e.g 161.185.160.93")
+                        .frame(width: 275, alignment: .leading)
                         .font(.system(size: 15))
                         .opacity(0.2)
                 }
                 
-                    
+                VStack(spacing: 15) {
                     Button(action: {
                         locationViewModel.fetchData()
                     },
@@ -88,17 +93,20 @@ struct GeoIpView: View {
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     })
-                
+                    
+                    Button("Back to main menu") {
+                        presentationModes.wrappedValue.dismiss()
+                    }
+                }
                 
                 
             }
-            .navigationBarTitle("IP Info Location", displayMode: .inline)
                 
                 
             }
         }
         
-}
+
 
 struct GeoIpView_Previews: PreviewProvider {
     static var previews: some View {
@@ -106,3 +114,9 @@ struct GeoIpView_Previews: PreviewProvider {
     }
 }
 
+//Button("Back to main menu") {
+//    presentationModes.wrappedValue.dismiss()
+//}
+//
+//
+//@Environment(\.presentationMode) var presentationModes
